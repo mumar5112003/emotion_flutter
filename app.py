@@ -125,30 +125,7 @@ def predict(img_path, save_path, model, inference_transform, classes, face_casca
     cv2.imwrite(save_path, cv2.cvtColor(image_array, cv2.COLOR_RGB2BGR))
 
 
-def main(args):
-    device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
-    # Load the emotion classification model
-    print("Loading the emotion classifier model")
-    model = torch.load(args.model_path, map_location=device)
-    model.eval()
-
-    # Define the emotion classes the model was trained on
-    classes = ['anger', 'happiness', 'neutral', 'sadness', 'surprise']
-
-    # Define face classifier
-    print("Loading the face classifier model")
-    face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-
-    inference_transform = transforms.Compose([
-        transforms.Resize(size=(48, 48)),  # Resize the image to 48x48
-        transforms.Grayscale(num_output_channels=1),  # Convert to grayscale
-        transforms.ToTensor(),  # Convert the image to a PyTorch tensor normalized to [0, 1]
-    ])
-
-    print("Predicting...")
-    predict(args.img_path, args.save_path, model, inference_transform, classes, face_cascade, device)
-    print(f"Ouput image has been saved to {args.save_path}")
 
 
 
