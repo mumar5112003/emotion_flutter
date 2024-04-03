@@ -1,2 +1,5 @@
-Flask==2.2.2
+Flask
+torchvision
 torch
+PIL
+argparse

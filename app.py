@@ -1,5 +1,4 @@
 import torch
-import cv2
 from torchvision import transforms
 from PIL import Image
 from argparse import ArgumentParser
@@ -79,50 +78,50 @@ class EmotionDetector(nn.Module):
         return x
     
 
-def predict_emotion(model, img, inference_transform, classes, device):
-    # Transform image
-    img_tensor = inference_transform(img)
-    img_tensor = img_tensor.unsqueeze(0).to(device)
+# def predict_emotion(model, img, inference_transform, classes, device):
+#     # Transform image
+#     img_tensor = inference_transform(img)
+#     img_tensor = img_tensor.unsqueeze(0).to(device)
 
-    # Make prediction
-    with torch.inference_mode():
-        output = model(img_tensor)
+#     # Make prediction
+#     with torch.inference_mode():
+#         output = model(img_tensor)
 
-    # Get predicted probabilities
-    probs = torch.softmax(output, dim=1).squeeze().cpu().detach().numpy()
+#     # Get predicted probabilities
+#     probs = torch.softmax(output, dim=1).squeeze().cpu().detach().numpy()
 
-    # Get predicted emotion label
-    pred_class = classes[torch.argmax(output).item()]
+#     # Get predicted emotion label
+#     pred_class = classes[torch.argmax(output).item()]
     
-    return probs, pred_class
+#     return probs, pred_class
 
 
-def predict(img_path, save_path, model, inference_transform, classes, face_cascade, device):
-    # Load the image
-    image_array = cv2.imread(img_path)
-    image_array = cv2.cvtColor(image_array, cv2.COLOR_BGR2RGB)
+# def predict(img_path, save_path, model, inference_transform, classes, face_cascade, device):
+#     # Load the image
+#     image_array = cv2.imread(img_path)
+#     image_array = cv2.cvtColor(image_array, cv2.COLOR_BGR2RGB)
     
-    # Detect faces
-    gray_image_array = cv2.cvtColor(image_array, cv2.COLOR_RGB2GRAY)
-    faces = face_cascade.detectMultiScale(gray_image_array, scaleFactor=1.1, minNeighbors=5, minSize=(48, 48))
+#     # Detect faces
+#     gray_image_array = cv2.cvtColor(image_array, cv2.COLOR_RGB2GRAY)
+#     faces = face_cascade.detectMultiScale(gray_image_array, scaleFactor=1.1, minNeighbors=5, minSize=(48, 48))
     
-    # Process each detected face
-    for (x, y, w, h) in faces:
-        # Crop face from the image
-        face_img_array = image_array[y:y+h, x:x+w]
-        # Predict emotion for the face
-        face_img = Image.fromarray(face_img_array)
-        probs, pred_class = predict_emotion(model, face_img, inference_transform, classes, device)
-        # Draw bounding box around the face
-        thinkness = max(int(image_array.shape[0] / 200), 1)
-        font_size = max(image_array.shape[0] / 400, 1)
-        cv2.rectangle(image_array, (x, y), (x+w, y+h), (255, 0, 0), thinkness)
-        # Display predicted emotion
-        cv2.putText(image_array, f"{pred_class}", (x, y), cv2.FONT_HERSHEY_SIMPLEX, font_size, (255, 0, 0), thinkness)
+#     # Process each detected face
+#     for (x, y, w, h) in faces:
+#         # Crop face from the image
+#         face_img_array = image_array[y:y+h, x:x+w]
+#         # Predict emotion for the face
+#         face_img = Image.fromarray(face_img_array)
+#         probs, pred_class = predict_emotion(model, face_img, inference_transform, classes, device)
+#         # Draw bounding box around the face
+#         thinkness = max(int(image_array.shape[0] / 200), 1)
+#         font_size = max(image_array.shape[0] / 400, 1)
+#         cv2.rectangle(image_array, (x, y), (x+w, y+h), (255, 0, 0), thinkness)
+#         # Display predicted emotion
+#         cv2.putText(image_array, f"{pred_class}", (x, y), cv2.FONT_HERSHEY_SIMPLEX, font_size, (255, 0, 0), thinkness)
     
-    # Save the result
-    print("Saving output...")
-    cv2.imwrite(save_path, cv2.cvtColor(image_array, cv2.COLOR_RGB2BGR))
+#     # Save the result
+#     print("Saving output...")
+#     cv2.imwrite(save_path, cv2.cvtColor(image_array, cv2.COLOR_RGB2BGR))
 
 
 
