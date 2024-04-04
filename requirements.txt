@@ -1,5 +1,1 @@
-Flask
-torchvision
-torch
-Pillow
-argparse
+
